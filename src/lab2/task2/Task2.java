@@ -110,11 +110,5 @@ public class Task2 {
     public static void main(final String[] args) {
         final University university = createUniversity();
         System.out.println(university);
-
-/*        final UniversityGenerator generator = new UniversityGenerator(3);
-        final University university = generator.generateUniversity("ЛПНУ");
-        final Group group = generator.generateGroup("IT-21", university.getInstitutes().get(0).getNameInstitute());
-        university.getInstitutes().get(0).getGroups().add(group);*/
-        //System.out.println(university);
     }
 }
