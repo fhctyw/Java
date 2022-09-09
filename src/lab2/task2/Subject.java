@@ -44,9 +44,9 @@ public class Subject {
         final StringBuilder builder = new StringBuilder();
         builder.append(nameSubject).append(" marks:\n");
         for (final Map.Entry<Student, Integer> item : studentMarks.entrySet()) {
-            builder.append(item.getKey()).append(" = ").append(item.getValue()).append('\n');
+            builder.append(item.getKey()).append(" = ").append(item.getValue()).append("/100").append('\n');
         }
-        builder.append(nameSubject).append("meetings:\n");
+        builder.append(nameSubject).append(" meetings:\n");
         for (final LocalDate date : dates) {
             builder.append(date).append('\n');
         }
