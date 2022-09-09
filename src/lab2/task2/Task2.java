@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
@@ -19,7 +20,7 @@ public class Task2 {
                 new Student("Yousuf Alexander", spec1, groupName1),
                 new Student("Mariam Almond", spec1, groupName1),
                 new Student("Amar Bird", spec1, groupName1)
-        ).toList();
+        ).collect(Collectors.toList());
         groups.add(new Group(groupName1, students1, Stream.of(
                 new Subject("Data Analyse", new HashMap<>(){{
                     put(students1.get(0), 30);
@@ -29,7 +30,7 @@ public class Task2 {
                 }}, Stream.of(
                         LocalDate.of(2022, 9, 6),
                         LocalDate.of(2022, 9, 9)
-                    ).toList()
+                    ).collect(Collectors.toList())
                 ),
                 new Subject("Collecting data", new HashMap<>(){{
                     put(students1.get(0), 33);
@@ -39,8 +40,18 @@ public class Task2 {
                 }}, Stream.of(
                         LocalDate.of(2022, 9, 6),
                         LocalDate.of(2022, 9, 9)
-                ).toList())
-        ).toList()
+                ).collect(Collectors.toList())),
+                new Subject("Physical Education", new HashMap<>(){{
+                    put(students1.get(0), 60);
+                    put(students1.get(1), 64);
+                    put(students1.get(2), 80);
+                    put(students1.get(3), 35);
+                }}, Stream.of(
+                        LocalDate.of(2022, 9, 10),
+                        LocalDate.of(2022, 9, 20)
+                ).collect(Collectors.toList())
+                )
+        ).collect(Collectors.toList())
         ));
 
         final String groupName2 = "IT-21";
@@ -50,7 +61,7 @@ public class Task2 {
                 new Student("Taliyah Riddle", spec2, groupName2),
                 new Student("Laiba Walsh", spec2, groupName2),
                 new Student("Gladys Pugh", spec2, groupName2)
-        ).toList();
+        ).collect(Collectors.toList());
         groups.add(new Group(groupName2, students2, Stream.of(
                 new Subject("Be a Computer", new HashMap<>(){{
                     put(students2.get(0), 99);
@@ -61,7 +72,7 @@ public class Task2 {
                         LocalDate.of(2022, 9, 2),
                         LocalDate.of(2022, 9, 12),
                         LocalDate.of(2022, 9, 14)
-                        ).toList()
+                        ).collect(Collectors.toList())
                 ),
                 new Subject("Java Enjoyers", new HashMap<>(){{
                     put(students2.get(0), 100);
@@ -71,8 +82,8 @@ public class Task2 {
                 }}, Stream.of(
                         LocalDate.of(2022, 9, 2),
                         LocalDate.of(2022, 9, 13)
-                ).toList())
-        ).toList()
+                ).collect(Collectors.toList()))
+        ).collect(Collectors.toList())
         ));
 
         /*final String groupName2 = "AN-12";

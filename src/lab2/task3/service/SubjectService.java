@@ -16,23 +16,12 @@ public class SubjectService extends Service{
         super(university);
     }
 
-    private Group getGroupByNameGroup(final String nameGroup) {
-        for (final Group group : university.getGroups()) {
-            if (group.getNameGroup().equals(nameGroup))
-                return group;
-        }
-        throw new InvalidParameterException("No such name");
-    }
-
     public void addSubject(final String nameGroup, final Subject subject) {
-        final Group group = getGroupByNameGroup(nameGroup);
-        final List<Subject> subjects = new ArrayList<>(group.getSubjects());
-        subjects.add(subject);
-        group.setSubjects(subjects);
+        getGroupByName(nameGroup).getSubjects().add(subject);
 
     }
     public void addSubject(final String nameGroup, final String nameSubject) {
-        final Group group = getGroupByNameGroup(nameGroup);
+        final Group group = getGroupByName(nameGroup);
         final List<Student> students = group.getStudents();
         final Map<Student, Integer> map = new HashMap<>();
         for (final Student student : students) {

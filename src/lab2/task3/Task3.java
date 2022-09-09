@@ -1,14 +1,12 @@
 package lab2.task3;
 
-import lab2.task2.Group;
-import lab2.task2.Subject;
 import lab2.task2.Task2;
 import lab2.task2.University;
+import lab2.task3.service.DateService;
+import lab2.task3.service.OutputConsoleService;
 import lab2.task3.service.SubjectService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.time.LocalDate;
 
 public class Task3 {
 
@@ -16,9 +14,19 @@ public class Task3 {
 
         final University university = Task2.createUniversity();
         System.out.println(university);
-        final SubjectService ss = new SubjectService(university);
-        ss.addSubject("IT-21", "PE");
+
+        final SubjectService subjectService = new SubjectService(university);
+        subjectService.addSubject("IT-21", "Physical Education");
         System.out.println(university);
 
+        final DateService dateService = new DateService(university);
+        dateService.addDate("IT-21", "Physical Education", "12.09.2022");
+        System.out.println(university);
+
+        final OutputConsoleService consoleService = new OutputConsoleService(university);
+        consoleService.displayGroupStudentsByName("AN-11");
+        System.out.println();
+        consoleService.displayStudentsBySubject("Physical Education");
+        System.out.println();
     }
 }
