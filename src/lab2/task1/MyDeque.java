@@ -128,25 +128,14 @@ public class MyDeque<T> implements Iterable<T> {
         return l.data;
     }
 
-    private Node<T> node(final int index) {
-        if (index < (size >> 1)) {
-            Node<T> x = first;
-            for (int i = 0; i < index; i++)
-                x = x.next;
-            return x;
-        } else {
-            Node<T> x = last;
-            for (int i = size - 1; i > index; i--)
-                x = x.prev;
-            return x;
-        }
-    }
-
     public T get(final int index) {
         if (!(index >= 0 && index < size)) {
             throw new IndexOutOfBoundsException();
         }
-        return node(index).data;
+        Node<T> x = first;
+        for (int i = 0; i < index; i++)
+            x = x.next;
+        return x.data;
     }
 
     @Override
@@ -160,6 +149,7 @@ public class MyDeque<T> implements Iterable<T> {
 
     class Itr implements Iterator<T> {
         private int index = 0;
+
         @Override
         public boolean hasNext() {
             return index < size();

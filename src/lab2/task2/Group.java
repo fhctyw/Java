@@ -40,10 +40,7 @@ public class Group {
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
-        builder.append(nameGroup).append('\n').append("students:\n");
-        for (final Student student : students) {
-            builder.append(student).append('\n');
-        }
+        builder.append(nameGroup).append('\n');
         for (final Subject subject : subjects) {
             builder.append(subject).append('\n');
         }

@@ -1,5 +1,6 @@
 package lab2.task1;
 
+import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
 public class Task1 {
@@ -54,7 +55,6 @@ public class Task1 {
         } catch (final NoSuchElementException e) {
             System.out.println("Exception NoSuchElementException has been caught");
         }
-
         outIterable(myDeque);
     }
 }
