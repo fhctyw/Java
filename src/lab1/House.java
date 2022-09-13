@@ -31,7 +31,7 @@ public class House {
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
-        for (final var room : rooms) {
+        for (final Room room : rooms) {
             builder.append(room).append('\n');
         }
         builder.deleteCharAt(builder.length()-1);

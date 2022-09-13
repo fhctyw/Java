@@ -1,18 +1,20 @@
 package lab1;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Task10 {
 
     public static void main(final String[] args) throws Exception {
 
-        final House house = new House(List.of(
+        final House house = new House(Stream.of(
                 new Room(3.5, TypeRoom.LIVING_ROOM, "Blue", 2, 1),
                 new Room(2.5, TypeRoom.KITCHEN, "White", 3, 2),
                 new Room(4, TypeRoom.BEDROOM, "White", 1, 2),
                 new Room(1, TypeRoom.RESTROOM, "Gray", 1, 0),
                 new Room(3, TypeRoom.CHILD_ROOM, "Pink", 1, 1)
-        ), "Shevchenko 5");
+        ).collect(Collectors.toList()), "Shevchenko 5");
 
         System.out.println(house);
         System.out.println("Start building");

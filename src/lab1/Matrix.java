@@ -41,7 +41,7 @@ public class Matrix {
         final Random random = new Random();
         for (int i = 0; i < matrix.row; i++) {
             for (int j = 0; j < matrix.col; j++) {
-                matrix.matrix[i][j] = random.nextInt(0, 9);
+                matrix.matrix[i][j] = random.nextInt(9);
             }
         }
         return matrix;

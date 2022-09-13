@@ -111,7 +111,7 @@ public class Room {
         if (area < 0) {
             throw new Exception("area can't be negative");
         }
-        final var finalArea = this.area - area;
+        final double finalArea = this.area - area;
         if (finalArea < 0) {
             throw new Exception("area can't be negative");
         }

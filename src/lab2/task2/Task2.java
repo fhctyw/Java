@@ -22,7 +22,7 @@ public class Task2 {
                 new Student("Amar Bird", spec1, groupName1)
         ).collect(Collectors.toList());
         groups.add(new Group(groupName1, students1, Stream.of(
-                new Subject("Data Analyse", new HashMap<>(){{
+                new Subject("Data Analyse", new HashMap<Student, Integer>(){{
                     put(students1.get(0), 30);
                     put(students1.get(1), 45);
                     put(students1.get(2), 40);
@@ -32,7 +32,7 @@ public class Task2 {
                         LocalDate.of(2022, 9, 9)
                     ).collect(Collectors.toList())
                 ),
-                new Subject("Collecting data", new HashMap<>(){{
+                new Subject("Collecting data", new HashMap<Student, Integer>(){{
                     put(students1.get(0), 33);
                     put(students1.get(1), 46);
                     put(students1.get(2), 41);
@@ -41,7 +41,7 @@ public class Task2 {
                         LocalDate.of(2022, 9, 6),
                         LocalDate.of(2022, 9, 9)
                 ).collect(Collectors.toList())),
-                new Subject("Physical Education", new HashMap<>(){{
+                new Subject("Physical Education", new HashMap<Student, Integer>(){{
                     put(students1.get(0), 60);
                     put(students1.get(1), 64);
                     put(students1.get(2), 80);
@@ -63,7 +63,7 @@ public class Task2 {
                 new Student("Gladys Pugh", spec2, groupName2)
         ).collect(Collectors.toList());
         groups.add(new Group(groupName2, students2, Stream.of(
-                new Subject("Be a Computer", new HashMap<>(){{
+                new Subject("Be a Computer", new HashMap<Student, Integer>(){{
                     put(students2.get(0), 99);
                     put(students2.get(1), 46);
                     put(students2.get(2), 60);
@@ -74,7 +74,7 @@ public class Task2 {
                         LocalDate.of(2022, 9, 14)
                         ).collect(Collectors.toList())
                 ),
-                new Subject("Java Enjoyers", new HashMap<>(){{
+                new Subject("Java Enjoyers", new HashMap<Student, Integer>(){{
                     put(students2.get(0), 100);
                     put(students2.get(1), 100);
                     put(students2.get(2), 100);
