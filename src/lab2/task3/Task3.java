@@ -24,8 +24,10 @@ public class Task3 {
         System.out.println(university);
 
         final OutputConsoleService consoleService = new OutputConsoleService(university);
+        System.out.println("display students by group name: ");
         consoleService.displayGroupStudentsByName("AN-11");
         System.out.println();
+        System.out.println("display students by subject: ");
         consoleService.displayStudentsBySubject("Physical Education");
         System.out.println();
     }

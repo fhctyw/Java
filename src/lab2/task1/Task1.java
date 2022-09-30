@@ -1,6 +1,5 @@
 package lab2.task1;
 
-import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
 public class Task1 {
