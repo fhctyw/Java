@@ -1,28 +1,33 @@
 package lab3.task1.menu;
 
 import lab3.task1.store.Store;
-import lab3.task1.store.database.FileTextService;
+import lab3.task1.store.hr.Purchase;
 import lab3.task1.store.hr.human.Buyer;
 import lab3.task1.store.hr.human.Customer;
 import lab3.task1.store.hr.service.PurchaseHistoryChecker;
 import lab3.task1.store.report.NameIsEmptyException;
 import lab3.task1.store.report.PriceZeroException;
 import lab3.task1.store.report.Report;
+import lab3.task1.store.service.StoreSeller;
 import lab3.task1.store.service.StoreService;
+import lab3.task1.store.service.StoreTask3;
 import lab3.task1.store.storage.Good;
 import lab3.task1.store.storage.service.*;
 import lab3.task1.store.workers.human.Cashier;
 import lab3.task1.store.workers.human.Seller;
-import lab3.task1.store.workers.service.SellerService;
 import lab3.task1.store.workers.service.WorkerChecker;
 import lab3.task1.store.workers.service.WorkerGet;
-import lab3.task1.store.workers.service.WorkerPut;
+import lab3.task1.store.workers.service.WorkerAdd;
 
-import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Menu {
     private boolean run;
@@ -33,6 +38,39 @@ public class Menu {
         this.buyers = new ArrayList<Buyer>();
         this.store = StoreService.emptyStore();
         this.run = true;
+    }
+
+    public void setDefaultStore() {
+        final StoragePut storagePut = new StoragePut(store.getStorage());
+        storagePut.putNoReport(Stream.of(
+                new Good("table", 13),
+                new Good("table", 13),
+                new Good("table", 13),
+                new Good("phone", 1300),
+                new Good("phone", 1300),
+                new Good("computer mouse", 300),
+                new Good("computer mouse", 300),
+                new Good("computer mouse", 300),
+                new Good("Cake", 20),
+                new Good("Cake", 20),
+                new Good("Cake", 20)
+        ).collect(Collectors.toList()));
+
+        final WorkerAdd workerAdd = new WorkerAdd(store.getWorkers());
+        workerAdd.add(new Cashier("Alex", 9000));
+        workerAdd.add(new Cashier("Jack", 11300));
+
+        buyers.add(new Customer("Max", 3000));
+        buyers.add(new Customer("Amanda", 5300));
+
+        final StoreSeller seller = new StoreSeller(store);
+        seller.sellGood((Seller) store.getWorkers().getEmployees().get(1), buyers.get(1), ((Good) store.getStorage().getGoods().values().toArray()[3]).getUuid());
+
+        seller.sellGood((Seller) store.getWorkers().getEmployees().get(1), buyers.get(1), ((Good) store.getStorage().getGoods().values().toArray()[6]).getUuid());
+        seller.sellGood((Seller) store.getWorkers().getEmployees().get(1), buyers.get(1), ((Good) store.getStorage().getGoods().values().toArray()[3]).getUuid());
+
+        store.getPurchaseHistory().getPurchases()
+                .add(new Purchase(LocalDateTime.of(LocalDate.parse("2022-10-01"), LocalTime.MIN), new Good("fridge", 2000), buyers.get(0), (Seller) store.getWorkers().getEmployees().get(0)));
     }
 
     public void setRun(final boolean run) {
@@ -82,12 +120,6 @@ public class Menu {
 
     public void processOperation(final Operation operation) {
         switch (operation) {
-            case SAVE_DATABASE:
-                saveDatabase();
-                break;
-            case LOAD_DATABASE:
-                loadDatabase();
-                break;
             case INFO_DATABASE:
                 infoDatabase();
                 break;
@@ -96,6 +128,24 @@ public class Menu {
                 break;
             case GET_GOODS:
                 getGoods();
+                break;
+            case GET_SORT_GOODS:
+                getSortGoods();
+                break;
+            case GET_AVG_PRICE:
+                getAvgPrice();
+                break;
+            case GET_PURCHASE_HISTORY_BY:
+                getPurchaseHistoryBy();
+                break;
+            case GET_GOODS_BY_BUYER:
+                getGoodsByBuyer();
+                break;
+            case GET_POPULAR_GOOD:
+                getPopularGood();
+                break;
+            case GET_MAX_PROFIT:
+                getMaxProfit();
                 break;
             case ADD_GOOD:
                 addGood();
@@ -127,57 +177,74 @@ public class Menu {
         }
     }
 
-    private void loadDatabase() {
-        printMenuTypeDatabase();
-        final int indexDatabase = getChoose();
-        final TypeDatabase typeDatabase = TypeDatabase.values()[indexDatabase];
-        switch (typeDatabase) {
-            case STORAGE_DATABASE:
-                final StorageFileText storageFileText = new StorageFileText(store.getStorage());
-                try {
-                    storageFileText.load();
-                } catch (final IOException ioException) {
-                    throw new RuntimeException(ioException);
-                }
-                break;
-            case HUMAN_RESOURCES_DATABASE:
-                break;
-            case PURCHASE_HISTORY_DATABASE:
-                break;
-        }
+    private void getMaxProfit() {
+        final StoreTask3 storeTask3 = new StoreTask3(store);
+        System.out.println(storeTask3.getMaxProfitPerDate());
     }
 
-    private void saveDatabase() {
-        printMenuTypeDatabase();
-        final int indexDatabase = getChoose();
-        final TypeDatabase typeDatabase = TypeDatabase.values()[indexDatabase];
-        switch (typeDatabase) {
-            case STORAGE_DATABASE:
-                final StorageFileText storageFileText = new StorageFileText(store.getStorage());
-                try {
-                    storageFileText.save();
-                } catch (final IOException ioException) {
-                    throw new RuntimeException(ioException);
-                }
-                break;
-            case HUMAN_RESOURCES_DATABASE:
+    private void getPopularGood() {
+        final StoreTask3 storeTask3 = new StoreTask3(store);
+        System.out.println(storeTask3.getPopularGood());
+    }
 
+    private void getGoodsByBuyer() {
+        final Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter customer name = ");
+        final String customerName = scanner.nextLine();
+        final Customer customer = (Customer) buyers.stream()
+                .filter(e -> e.getClass() == Customer.class && ((Customer) e).getName().equals(customerName))
+                .findFirst()
+                .orElse(null);
+
+        final StoreTask3 storeTask3 = new StoreTask3(store);
+        storeTask3.getGoodsByBuyer(customer).forEach((k, v) -> System.out.println(k + " " + v));
+    }
+
+    private void getPurchaseHistoryBy() {
+        final Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter customer name = ");
+        final String customerName = scanner.nextLine();
+        final Customer customer = (Customer) buyers.stream()
+                .filter(e -> e.getClass() == Customer.class && ((Customer) e).getName().equals(customerName))
+                .findFirst()
+                .orElse(null);
+
+        System.out.print("Enter first date = ");
+        final LocalDateTime firstTime = LocalDateTime.of(LocalDate.parse(scanner.nextLine()), LocalTime.MIN);
+
+        System.out.print("Enter second date = ");
+        final LocalDateTime secondTime = LocalDateTime.of(LocalDate.parse(scanner.nextLine()), LocalTime.MAX);
+
+        final StoreTask3 storeTask3 = new StoreTask3(store);
+        storeTask3.getPurchaseHistoryPerBuyer(customer, firstTime, secondTime).getPurchases().forEach(System.out::println);
+        System.out.println("Total expenses = " + storeTask3.getExpensePerBuyer(customer, firstTime, secondTime));
+    }
+
+    private void getAvgPrice() {
+        final StoreTask3 storageSort = new StoreTask3(store);
+        System.out.println("avg = " + storageSort.getAvgPrice());
+    }
+
+    private void getSortGoods() {
+        final Scanner scanner = new Scanner(System.in);
+        System.out.println("[0] Sort by name");
+        System.out.println("[1] Sort by price");
+
+        final int index = getChoose();
+        final StoreTask3 storageSort = new StoreTask3(store);
+
+        switch (index) {
+            case 0:
+                storageSort.sortByName().forEach(System.out::println);
                 break;
-            case PURCHASE_HISTORY_DATABASE:
+            case 1:
+                storageSort.sortByPrice().forEach(System.out::println);
                 break;
         }
     }
 
     private void getPurchaseHistory() {
         System.out.println(store.getPurchaseHistory());
-    }
-
-    public void printMenuTypeDatabase() {
-        final TypeDatabase[] values = TypeDatabase.values();
-        for (int i = 0; i < values.length; i++) {
-            System.out.println(i + " " + values[i].name());
-        }
-        System.out.println();
     }
 
     public void infoDatabase() {
@@ -273,23 +340,22 @@ public class Menu {
         final String stringUuidGood = scanner.nextLine();
 
         System.out.print("Enter index seller = ");
-        final int indexBuyer = scanner.nextInt();
-
-        System.out.print("Enter index buyer = ");
         final int indexSeller = scanner.nextInt();
 
+        System.out.print("Enter index buyer = ");
+        final int indexBuyer = scanner.nextInt();
 
         final UUID uuidGood = UUID.fromString(stringUuidGood);
         final StorageGet storageGet = new StorageGet(store.getStorage());
-        final Good good = storageGet.get(uuidGood);
+        //final Good good = storageGet.get(uuidGood);
 
         final WorkerGet workerGet = new WorkerGet(store.getWorkers().getEmployers(Seller.class));
         final Seller seller = (Seller) workerGet.get(indexSeller);
 
         final Buyer buyer = buyers.get(indexBuyer);
 
-        final SellerService sellerService = new SellerService(store.getPurchaseHistory());
-        sellerService.sell(seller, buyer, good);
+        final StoreSeller storageSeller = new StoreSeller(store);
+        storageSeller.sellGood(seller, buyer, uuidGood);
     }
 
     public void stopStore() {
@@ -308,8 +374,8 @@ public class Menu {
         final String nameCashier = scanner.nextLine();
         System.out.print("Enter salary = ");
         final int salaryCashier = scanner.nextInt();
-        final WorkerPut workerPut = new WorkerPut(store.getWorkers());
-        workerPut.put(new Cashier(nameCashier, salaryCashier));
+        final WorkerAdd workerAdd = new WorkerAdd(store.getWorkers());
+        workerAdd.add(new Cashier(nameCashier, salaryCashier));
     }
 
     public void getBuyer() {

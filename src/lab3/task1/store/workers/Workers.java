@@ -21,7 +21,10 @@ public class Workers {
     }
 
     public <T> Workers getEmployers(final Class<T> clazz) {
-        return new Workers(employees.stream().filter(clazz::isInstance).collect(Collectors.toList()));
+        return new Workers(employees
+                .stream()
+                .filter(clazz::isInstance)
+                .collect(Collectors.toList()));
     }
 
     @Override

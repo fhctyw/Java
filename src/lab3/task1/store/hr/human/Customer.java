@@ -2,6 +2,8 @@ package lab3.task1.store.hr.human;
 
 import lab3.task1.store.storage.Good;
 
+import java.util.Objects;
+
 public class Customer implements Buyer {
     private String name;
     private int money;
@@ -36,19 +38,20 @@ public class Customer implements Buyer {
     }
 
     @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Customer customer = (Customer) o;
+        return money == customer.money && Objects.equals(name, customer.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, money);
+    }
+
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "{name='" + name + "', money='" + money + "'}";
-    }
-
-    @Override
-    public String serializationForDatabase() {
-        return name + ',' + money;
-    }
-
-    @Override
-    public void deserializationFromDatabase(final String text) {
-        final String[] strings = text.split(",");
-        setName(strings[0]);
-        setMoney(Integer.parseInt(strings[1]));
     }
 }

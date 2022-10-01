@@ -43,15 +43,4 @@ public class Cashier implements Seller {
                 '}';
     }
 
-    @Override
-    public String serializationForDatabase() {
-        return name + ',' + salary;
-    }
-
-    @Override
-    public void deserializationFromDatabase(final String text) {
-        final String[] strings = text.split(",");
-        setName(strings[0]);
-        setSalary(Integer.parseInt(strings[1]));
-    }
 }

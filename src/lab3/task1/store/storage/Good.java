@@ -1,11 +1,10 @@
 package lab3.task1.store.storage;
 
-import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Good implements Serializable {
-    private UUID uuid = UUID.randomUUID(); // In doubt;
+public class Good {
+    private UUID uuid = UUID.randomUUID();
     private String name;
     private double price;
 

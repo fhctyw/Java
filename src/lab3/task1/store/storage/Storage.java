@@ -1,10 +1,9 @@
 package lab3.task1.store.storage;
 
-import java.io.Serializable;
 import java.util.TreeMap;
 import java.util.UUID;
 
-public class Storage implements Serializable {
+public class Storage {
     private TreeMap<UUID, Good> goods;
 
     public TreeMap<UUID, Good> getGoods() {

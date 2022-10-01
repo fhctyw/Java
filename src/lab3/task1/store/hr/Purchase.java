@@ -53,6 +53,6 @@ public class Purchase {
 
     @Override
     public String toString() {
-        return dateTime + " " + good.getUuid() + " " + buyer + " " + seller;
+        return dateTime + " " + good + " " + buyer + " " + seller;
     }
 }
