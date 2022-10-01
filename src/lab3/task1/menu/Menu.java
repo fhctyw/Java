@@ -1,6 +1,7 @@
 package lab3.task1.menu;
 
 import lab3.task1.store.Store;
+import lab3.task1.store.database.FileTextService;
 import lab3.task1.store.hr.human.Buyer;
 import lab3.task1.store.hr.human.Customer;
 import lab3.task1.store.hr.service.PurchaseHistoryChecker;
@@ -9,10 +10,7 @@ import lab3.task1.store.report.PriceZeroException;
 import lab3.task1.store.report.Report;
 import lab3.task1.store.service.StoreService;
 import lab3.task1.store.storage.Good;
-import lab3.task1.store.storage.service.StorageCheck;
-import lab3.task1.store.storage.service.StorageGet;
-import lab3.task1.store.storage.service.StoragePut;
-import lab3.task1.store.storage.service.StorageScan;
+import lab3.task1.store.storage.service.*;
 import lab3.task1.store.workers.human.Cashier;
 import lab3.task1.store.workers.human.Seller;
 import lab3.task1.store.workers.service.SellerService;
@@ -20,6 +18,7 @@ import lab3.task1.store.workers.service.WorkerChecker;
 import lab3.task1.store.workers.service.WorkerGet;
 import lab3.task1.store.workers.service.WorkerPut;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -83,6 +82,12 @@ public class Menu {
 
     public void processOperation(final Operation operation) {
         switch (operation) {
+            case SAVE_DATABASE:
+                saveDatabase();
+                break;
+            case LOAD_DATABASE:
+                loadDatabase();
+                break;
             case INFO_DATABASE:
                 infoDatabase();
                 break;
@@ -122,6 +127,47 @@ public class Menu {
         }
     }
 
+    private void loadDatabase() {
+        printMenuTypeDatabase();
+        final int indexDatabase = getChoose();
+        final TypeDatabase typeDatabase = TypeDatabase.values()[indexDatabase];
+        switch (typeDatabase) {
+            case STORAGE_DATABASE:
+                final StorageFileText storageFileText = new StorageFileText(store.getStorage());
+                try {
+                    storageFileText.load();
+                } catch (final IOException ioException) {
+                    throw new RuntimeException(ioException);
+                }
+                break;
+            case HUMAN_RESOURCES_DATABASE:
+                break;
+            case PURCHASE_HISTORY_DATABASE:
+                break;
+        }
+    }
+
+    private void saveDatabase() {
+        printMenuTypeDatabase();
+        final int indexDatabase = getChoose();
+        final TypeDatabase typeDatabase = TypeDatabase.values()[indexDatabase];
+        switch (typeDatabase) {
+            case STORAGE_DATABASE:
+                final StorageFileText storageFileText = new StorageFileText(store.getStorage());
+                try {
+                    storageFileText.save();
+                } catch (final IOException ioException) {
+                    throw new RuntimeException(ioException);
+                }
+                break;
+            case HUMAN_RESOURCES_DATABASE:
+
+                break;
+            case PURCHASE_HISTORY_DATABASE:
+                break;
+        }
+    }
+
     private void getPurchaseHistory() {
         System.out.println(store.getPurchaseHistory());
     }
@@ -133,78 +179,6 @@ public class Menu {
         }
         System.out.println();
     }
-
-    public TypeDatabase getTypeDatabaseIndex() {
-        final Scanner scanner = new Scanner(System.in);
-        System.out.print("Choose type of database: ");
-        final int indexTypeDatabase = scanner.nextInt();
-        System.out.println();
-        TypeDatabase typeDatabase;
-        try {
-            typeDatabase = TypeDatabase.values()[indexTypeDatabase];
-        } catch (final IndexOutOfBoundsException indexOutOfBoundsException) {
-            System.out.println(ConsoleColors.RED + "Invalid type database index" + ConsoleColors.RESET);
-            System.out.println(ConsoleColors.GREEN_BOLD + "You should write in the range from 0 to " + (TypeDatabase.values().length - 1) + ConsoleColors.RESET + '\n');
-            typeDatabase = null;
-        }
-        return typeDatabase;
-    }
-
-//    private Object loadOneDatabase(final String typeDatabaseMessage) {
-//        final Scanner scanner = new Scanner(System.in);
-//        System.out.print("Name database of " + ConsoleColors.BLUE_BOLD + typeDatabaseMessage + ConsoleColors.RESET + ": ");
-//        final String name = scanner.nextLine();
-//        final FileDatabase fileDatabase = new FileDatabase(name);
-//        final Object database = fileDatabase.load();
-//        if (database == null) {
-//            System.out.println();
-//            System.out.println(ConsoleColors.RED_BOLD + "database is null" + ConsoleColors.RESET);
-//            System.out.println();
-//        }
-//        return database;
-//    }
-//
-//    public void loadDatabase() {
-//        printMenuTypeDatabase();
-//        final TypeDatabase typeDatabase = getTypeDatabaseIndex();
-//        switch (typeDatabase) {
-//            case STORAGE_DATABASE:
-//                this.storage = (Storage) loadOneDatabase("Storage");
-//                break;
-//            case HUMAN_RESOURES_DATABASE:
-//                this.workers = (Workers) loadOneDatabase("Human resoures");
-//                break;
-//            case PURCHASE_HISTORY_DATABASE:
-//                this.purchaseHistory = (PurchaseHistory) loadOneDatabase("Purchase history");
-//                break;
-//        }
-//    }
-//
-//    private void saveOneDatabase(final Object database, final String typeDatabaseMessage) {
-//        final Scanner scanner = new Scanner(System.in);
-//        System.out.print("Name database of " + ConsoleColors.BLUE_BOLD + typeDatabaseMessage + ConsoleColors.RESET + ": ");
-//        final String name = scanner.nextLine();
-//        final FileDatabase fileDatabase = new FileDatabase(name);
-//        if (!fileDatabase.save(database)) {
-//            System.out.println(ConsoleColors.RED + "database loading exception" + ConsoleColors.RESET);
-//        }
-//    }
-//
-//    public void saveDatabase() {
-//        printMenuTypeDatabase();
-//        final TypeDatabase typeDatabase = getTypeDatabaseIndex();
-//        switch (typeDatabase) {
-//            case STORAGE_DATABASE:
-//                saveOneDatabase(this.storage, "Storage");
-//                break;
-//            case HUMAN_RESOURES_DATABASE:
-//                saveOneDatabase(this.workers, "Human resoures");
-//                break;
-//            case PURCHASE_HISTORY_DATABASE:
-//                saveOneDatabase(this.purchaseHistory, "Purchase history");
-//                break;
-//        }
-//    }
 
     public void infoDatabase() {
         final StorageCheck storageCheck = new StorageCheck(store.getStorage());
@@ -335,7 +309,7 @@ public class Menu {
         System.out.print("Enter salary = ");
         final int salaryCashier = scanner.nextInt();
         final WorkerPut workerPut = new WorkerPut(store.getWorkers());
-        workerPut.put(new Cashier(store.getPurchaseHistory(), nameCashier, salaryCashier));
+        workerPut.put(new Cashier(nameCashier, salaryCashier));
     }
 
     public void getBuyer() {

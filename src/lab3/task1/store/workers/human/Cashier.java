@@ -5,17 +5,9 @@ import lab3.task1.store.hr.human.Buyer;
 import lab3.task1.store.storage.Good;
 
 public class Cashier implements Seller {
-    private PurchaseHistory purchaseHistory;
     private String name;
     private int salary;
 
-    public PurchaseHistory getPurchaseHistory() {
-        return purchaseHistory;
-    }
-
-    public void setPurchaseHistory(final PurchaseHistory purchaseHistory) {
-        this.purchaseHistory = purchaseHistory;
-    }
 
     public String getName() {
         return name;
@@ -33,8 +25,7 @@ public class Cashier implements Seller {
         this.salary = salary;
     }
 
-    public Cashier(final PurchaseHistory purchaseHistory, final String name, final int salary) {
-        this.purchaseHistory = purchaseHistory;
+    public Cashier(final String name, final int salary) {
         this.name = name;
         this.salary = salary;
     }
@@ -50,5 +41,17 @@ public class Cashier implements Seller {
                 "name='" + name + '\'' +
                 ", salary=" + salary +
                 '}';
+    }
+
+    @Override
+    public String serializationForDatabase() {
+        return name + ',' + salary;
+    }
+
+    @Override
+    public void deserializationFromDatabase(final String text) {
+        final String[] strings = text.split(",");
+        setName(strings[0]);
+        setSalary(Integer.parseInt(strings[1]));
     }
 }

@@ -1,6 +1,8 @@
 package lab3.task1.menu;
 
 public enum Operation {
+    SAVE_DATABASE("Save database"),
+    LOAD_DATABASE("Load database"),
     INFO_DATABASE("Show info about database"),
     GET_GOOD("Get good"),
     GET_GOODS("Get list of all goods"),

@@ -39,4 +39,16 @@ public class Customer implements Buyer {
     public String toString() {
         return getClass().getSimpleName() + "{name='" + name + "', money='" + money + "'}";
     }
+
+    @Override
+    public String serializationForDatabase() {
+        return name + ',' + money;
+    }
+
+    @Override
+    public void deserializationFromDatabase(final String text) {
+        final String[] strings = text.split(",");
+        setName(strings[0]);
+        setMoney(Integer.parseInt(strings[1]));
+    }
 }

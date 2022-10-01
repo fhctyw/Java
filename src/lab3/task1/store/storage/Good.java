@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class Good implements Serializable {
-    final private UUID uuid = UUID.randomUUID(); // In doubt;
+    private UUID uuid = UUID.randomUUID(); // In doubt;
     private String name;
     private double price;
 
@@ -21,12 +21,20 @@ public class Good implements Serializable {
         return uuid;
     }
 
+    protected void setUuid(final UUID uuid) {
+        this.uuid = uuid;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(final String name) {
         this.name = name;
+    }
+
+    public Good() {
+
     }
 
     public Good(final String name, final double price) {

@@ -2,11 +2,12 @@ package lab3.task1.store.storage.service;
 
 import lab3.task1.store.database.FileTextService;
 import lab3.task1.store.storage.Good;
+import lab3.task1.store.storage.GoodService;
 import lab3.task1.store.storage.Storage;
 
-import java.io.IOException;
-import java.util.TreeMap;
-import java.util.UUID;
+import javax.swing.*;
+import java.io.*;
+import java.util.*;
 
 public class StorageFileText extends FileTextService {
     public StorageFileText(final Object object, final String name) {
@@ -19,32 +20,43 @@ public class StorageFileText extends FileTextService {
 
     @Override
     public void save() throws IOException {
+        final BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(name));
 
         final Storage storage = (Storage) object;
-        storage.getGoods()
-                .forEach((key, value) -> {
-                    final String stringBuilder = key.toString() +
-                            ',' + value.getName() +
-                            ',' + String.valueOf(value.getPrice()) +
-                            System.lineSeparator();
-                    bufferedWriter.write(stringBuilder);
-                });
+        for (final Map.Entry<UUID, Good> uuidGoodEntry : storage.getGoods().entrySet()) {
+            final UUID key = uuidGoodEntry.getKey();
+            final Good value = uuidGoodEntry.getValue();
+            final String line = key.toString() +
+                    ',' + value.getName() +
+                    ',' + String.valueOf(value.getPrice())
+                    + System.lineSeparator();
+            bufferedWriter.write(line);
+        }
+
+        bufferedWriter.close();
     }
 
     private Good parseGood(final String goodString) {
-        final String stringUuid = goodString.substring(0, 36);
-        //String res = goodString.substring(36);
-        final int indexOfStartGoodName = 36;
-        final int indexOfEndGoodName;
+        final String[] stringsGood = goodString.split(",");
+        final UUID uuid = UUID.fromString(stringsGood[0]);
+        final String name = stringsGood[1];
+        final double price = Double.parseDouble(stringsGood[2]);
+        return GoodService.makeGood(uuid, name, price);
     }
 
     @Override
     public void load() throws IOException {
-        final Storage storage = new Storage(new TreeMap<UUID, Good>());
+        final BufferedReader bufferedReader = new BufferedReader(new FileReader(name));
+        final Storage storage = (Storage) object;
 
-        String line;
-        while ((line = bufferedReader.readLine()) != null) {
+        final TreeMap<UUID, Good> treeMap = new TreeMap<UUID, Good>();
+        bufferedReader.lines().forEach(
+                line -> {
+                    final Good good = parseGood(line);
+                    treeMap.put(good.getUuid(), good);
+                });
+        storage.setGoods(treeMap);
 
-        }
+        bufferedReader.close();
     }
 }
