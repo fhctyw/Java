@@ -4,20 +4,17 @@ import lab3.task1.store.Store;
 import lab3.task1.store.hr.Purchase;
 import lab3.task1.store.hr.human.Buyer;
 import lab3.task1.store.hr.human.Customer;
-import lab3.task1.store.hr.service.PurchaseHistoryChecker;
+import lab3.task1.store.hr.service.PurchaseHistoryService;
 import lab3.task1.store.report.NameIsEmptyException;
 import lab3.task1.store.report.PriceZeroException;
 import lab3.task1.store.report.Report;
-import lab3.task1.store.service.StoreSeller;
 import lab3.task1.store.service.StoreService;
 import lab3.task1.store.service.StoreTask3;
 import lab3.task1.store.storage.Good;
-import lab3.task1.store.storage.service.*;
+import lab3.task1.store.storage.service.StorageService;
 import lab3.task1.store.workers.human.Cashier;
 import lab3.task1.store.workers.human.Seller;
-import lab3.task1.store.workers.service.WorkerChecker;
-import lab3.task1.store.workers.service.WorkerGet;
-import lab3.task1.store.workers.service.WorkerAdd;
+import lab3.task1.store.workers.service.WorkerService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,8 +38,9 @@ public class Menu {
     }
 
     public void setDefaultStore() {
-        final StoragePut storagePut = new StoragePut(store.getStorage());
-        storagePut.putNoReport(Stream.of(
+
+        final StorageService storageService = new StorageService(store.getStorage());
+        storageService.putNoReport(Stream.of(
                 new Good("table", 13),
                 new Good("table", 13),
                 new Good("table", 13),
@@ -56,21 +54,20 @@ public class Menu {
                 new Good("Cake", 20)
         ).collect(Collectors.toList()));
 
-        final WorkerAdd workerAdd = new WorkerAdd(store.getWorkers());
-        workerAdd.add(new Cashier("Alex", 9000));
-        workerAdd.add(new Cashier("Jack", 11300));
+        final WorkerService workerService = new WorkerService(store.getWorkers());
+        workerService.addWorker(new Cashier("Alex", 9000));
+        workerService.addWorker(new Cashier("Jack", 11300));
 
         buyers.add(new Customer("Max", 3000));
         buyers.add(new Customer("Amanda", 5300));
 
-        final StoreSeller seller = new StoreSeller(store);
-        seller.sellGood((Seller) store.getWorkers().getEmployees().get(1), buyers.get(1), ((Good) store.getStorage().getGoods().values().toArray()[3]).getUuid());
+        final StoreService storeService = new StoreService(store);
+        storeService.sellGood((Seller) store.getWorkers().getEmployees().get(1), buyers.get(1), ((Good) store.getStorage().getGoods().values().toArray()[3]).getUuid());
 
-        seller.sellGood((Seller) store.getWorkers().getEmployees().get(1), buyers.get(1), ((Good) store.getStorage().getGoods().values().toArray()[6]).getUuid());
-        seller.sellGood((Seller) store.getWorkers().getEmployees().get(1), buyers.get(1), ((Good) store.getStorage().getGoods().values().toArray()[3]).getUuid());
+        storeService.sellGood((Seller) store.getWorkers().getEmployees().get(1), buyers.get(1), ((Good) store.getStorage().getGoods().values().toArray()[6]).getUuid());
+        storeService.sellGood((Seller) store.getWorkers().getEmployees().get(1), buyers.get(1), ((Good) store.getStorage().getGoods().values().toArray()[3]).getUuid());
 
-        store.getPurchaseHistory().getPurchases()
-                .add(new Purchase(LocalDateTime.of(LocalDate.parse("2022-10-01"), LocalTime.MIN), new Good("fridge", 2000), buyers.get(0), (Seller) store.getWorkers().getEmployees().get(0)));
+        store.getPurchaseHistory().getPurchases().add(new Purchase(LocalDateTime.of(LocalDate.parse("2022-10-01"), LocalTime.MIN), new Good("fridge", 2000), buyers.get(0), (Seller) store.getWorkers().getEmployees().get(0)));
     }
 
     public void setRun(final boolean run) {
@@ -248,33 +245,34 @@ public class Menu {
     }
 
     public void infoDatabase() {
-        final StorageCheck storageCheck = new StorageCheck(store.getStorage());
-        System.out.println("Storage = " + ((storageCheck.exist())
+
+        final StorageService storageService = new StorageService(store.getStorage());
+        System.out.println("Storage = " + ((storageService.exist())
                 ? ConsoleColors.GREEN_BOLD + "available" + ConsoleColors.RESET
                 : ConsoleColors.RED_BOLD + "not available" + ConsoleColors.RESET));
-        if (storageCheck.exist()) {
-            System.out.println("good count = " + storageCheck.count());
+        if (storageService.exist()) {
+            System.out.println("good count = " + storageService.count());
         }
 
-        final WorkerChecker workerChecker = new WorkerChecker(store.getWorkers());
-        System.out.println("Human resources = " + ((workerChecker.exist())
+        final WorkerService workerService = new WorkerService(store.getWorkers());
+        System.out.println("Human resources = " + ((workerService.exist())
                 ? ConsoleColors.GREEN_BOLD + "available" + ConsoleColors.RESET
                 : ConsoleColors.RED_BOLD + "not available" + ConsoleColors.RESET));
-        if (workerChecker.exist()) {
-            System.out.println("worker count = " + workerChecker.count());
+        if (workerService.exist()) {
+            System.out.println("worker count = " + workerService.count());
         }
-        final PurchaseHistoryChecker purchaseHistoryChecker = new PurchaseHistoryChecker(store.getPurchaseHistory());
-        System.out.println("Purchase history = " + ((purchaseHistoryChecker.exist())
+        final PurchaseHistoryService purchaseHistoryService = new PurchaseHistoryService(store.getPurchaseHistory());
+        System.out.println("Purchase history = " + ((purchaseHistoryService.exist())
                 ? ConsoleColors.GREEN_BOLD + "available" + ConsoleColors.RESET
                 : ConsoleColors.RED_BOLD + "not available" + ConsoleColors.RESET));
-        if (purchaseHistoryChecker.exist()) {
-            System.out.println("purchase history count = " + purchaseHistoryChecker.count());
+        if (purchaseHistoryService.exist()) {
+            System.out.println("purchase history count = " + purchaseHistoryService.count());
         }
         System.out.println();
     }
 
     public void getGood() {
-        final StorageGet storageGet = new StorageGet(store.getStorage());
+        final StorageService storageService = new StorageService(store.getStorage());
         System.out.println("[0] get good by uuid");
         System.out.println("[1] get good by name");
         final int choose = getChoose();
@@ -283,20 +281,19 @@ public class Menu {
             case 0:
                 System.out.print("Enter uuid(in hex format) = ");
                 final String stringUuid = scanner.nextLine();
-                System.out.println(storageGet.get(UUID.fromString(stringUuid)));
+                System.out.println(storageService.getGood(UUID.fromString(stringUuid)));
                 break;
             case 1:
                 System.out.print("Enter name of good = ");
                 final String nameGood = scanner.nextLine();
-                final StorageScan storageScan = new StorageScan(store.getStorage());
-                final UUID uuid = storageScan.scanByName(nameGood);
-                System.out.println(storageGet.get(uuid));
+                final UUID uuid = storageService.scanByName(nameGood);
+                System.out.println(storageService.getGood(uuid));
                 break;
         }
     }
 
     public void addGood() {
-        final StoragePut storagePut = new StoragePut(store.getStorage());
+        final StorageService storageService = new StorageService(store.getStorage());
         final Scanner scanner = new Scanner(System.in);
         System.out.print("Enter name of good = ");
         final String nameGood = scanner.nextLine();
@@ -308,13 +305,13 @@ public class Menu {
         final int countGood = scanner.nextInt();
         final Report report;
         if (countGood == 1) {
-            report = storagePut.put(new Good(nameGood, priceGood));
+            report = storageService.putGood(new Good(nameGood, priceGood));
         } else {
             final List<Good> goods = new ArrayList<Good>();
             for (int i = 0; i < countGood; i++) {
                 goods.add(new Good(nameGood, priceGood));
             }
-            report = storagePut.put(goods);
+            report = storageService.putGood(goods);
         }
 
         System.out.println(report);
@@ -346,16 +343,15 @@ public class Menu {
         final int indexBuyer = scanner.nextInt();
 
         final UUID uuidGood = UUID.fromString(stringUuidGood);
-        final StorageGet storageGet = new StorageGet(store.getStorage());
-        //final Good good = storageGet.get(uuidGood);
 
-        final WorkerGet workerGet = new WorkerGet(store.getWorkers().getEmployers(Seller.class));
-        final Seller seller = (Seller) workerGet.get(indexSeller);
+        WorkerService workerService = new WorkerService(store.getWorkers());
+        workerService = new WorkerService(workerService.getEmployers(Seller.class));
+        final Seller seller = (Seller) workerService.getEmployer(indexSeller);
 
         final Buyer buyer = buyers.get(indexBuyer);
 
-        final StoreSeller storageSeller = new StoreSeller(store);
-        storageSeller.sellGood(seller, buyer, uuidGood);
+        final StoreService storeService = new StoreService(store);
+        storeService.sellGood(seller, buyer, uuidGood);
     }
 
     public void stopStore() {
@@ -363,8 +359,8 @@ public class Menu {
     }
 
     public void getGoods() {
-        final StorageGet storageGet = new StorageGet(store.getStorage());
-        storageGet.getAllGoods().forEach(System.out::println);
+        final StorageService storageService = new StorageService(store.getStorage());
+        storageService.getAllGoods().forEach(System.out::println);
         System.out.println();
     }
 
@@ -374,8 +370,8 @@ public class Menu {
         final String nameCashier = scanner.nextLine();
         System.out.print("Enter salary = ");
         final int salaryCashier = scanner.nextInt();
-        final WorkerAdd workerAdd = new WorkerAdd(store.getWorkers());
-        workerAdd.add(new Cashier(nameCashier, salaryCashier));
+        final WorkerService workerService = new WorkerService(store.getWorkers());
+        workerService.addWorker(new Cashier(nameCashier, salaryCashier));
     }
 
     public void getBuyer() {

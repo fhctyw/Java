@@ -1,6 +1,6 @@
 package lab3.task1.store.report;
 
-public class NameIsEmptyException extends Exception {
+public class NameIsEmptyException extends ReportException {
     public NameIsEmptyException() {
         super();
     }

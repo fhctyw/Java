@@ -7,17 +7,10 @@ import lab3.task1.store.hr.human.Buyer;
 import lab3.task1.store.storage.Good;
 import lab3.task1.tool.Pair;
 
-import java.beans.Introspector;
 import java.security.InvalidParameterException;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -52,7 +45,7 @@ public class StoreTask3 extends StoreService {
     }
 
     public PurchaseHistory getPurchaseHistoryPerBuyer(final Buyer buyer, final LocalDateTime firstTime, final LocalDateTime secondTime) {
-        if (firstTime.getNano() > secondTime.getNano()) {
+        if (firstTime.isAfter(secondTime)) {
             throw new InvalidParameterException();
         }
         return new PurchaseHistory(store

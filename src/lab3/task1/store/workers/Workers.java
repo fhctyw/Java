@@ -20,13 +20,6 @@ public class Workers {
         this.employees = employees;
     }
 
-    public <T> Workers getEmployers(final Class<T> clazz) {
-        return new Workers(employees
-                .stream()
-                .filter(clazz::isInstance)
-                .collect(Collectors.toList()));
-    }
-
     @Override
     public String toString() {
         final StringBuilder stringBuilder = new StringBuilder();

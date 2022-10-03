@@ -1,6 +1,6 @@
 package lab3.task1.store.report;
 
-public class PriceZeroException extends Exception {
+public class PriceZeroException extends ReportException {
     public PriceZeroException() {
         super();
     }
