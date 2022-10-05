@@ -15,23 +15,20 @@ public class Main {
         th2.start();
         th3.start();
 
-        final int iterations = 10;
-        final int milliseconds = 100;
-
         final Resources resources1 = new Resources();
-        final Runnable runnable = () -> {
-            try {
-                for (int i = 0; i < iterations; i++) {
-                    resources.number++;
-                    System.out.println("Thread[" + Thread.currentThread().getName() + "] = " + resources.number);
-                    Thread.sleep(milliseconds);
-                }
-            } catch (final InterruptedException interruptedException) {
-
-            }
-        };
-
         final ExecutorService executorService = Executors.newFixedThreadPool(3);
-        executorService.execute(runnable);
+        executorService.execute(new ArithmeticService(resources1, 12, 110));
+        executorService.execute(new ArithmeticService(resources1, 5, 200));
+        executorService.execute(new ArithmeticService(resources1, 25, 20));
+
+        executorService.shutdown();
+
+        try {
+            Thread.sleep(3000);
+        } catch (final InterruptedException e) {
+
+        }
+        System.out.println("resource.number = " + resources.number);
+        System.out.println("resource1.number = " + resources1.number);
     }
 }
